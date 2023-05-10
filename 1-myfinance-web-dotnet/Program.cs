@@ -1,4 +1,6 @@
 using myfinance_web_dotnet_infra;
+using myfinance_web_dotnet_service;
+using myfinance_web_dotnet_service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,21 +8,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyFinanceDbContext>();
 
+builder.Services.AddScoped<IPlanoContaService, PlanoContaService>();
+builder.Services.AddScoped<ITransacaoService, TransacaoService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+  app.UseExceptionHandler("/Home/Error");
+  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+  app.UseHsts();
 }
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
