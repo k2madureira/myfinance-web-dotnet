@@ -1,17 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using myfinance_web_dotnet_domain.Entities;
 
 namespace myfinance_web_dotnet_infra;
 
 public class MyFinanceDbContext : DbContext
 {
+  private readonly IConfiguration _configuration;
 
   public DbSet<PlanoConta> PlanoConta { get; set; }
 
   public DbSet<Transacao> Transacao { get; set; }
 
+  public MyFinanceDbContext(IConfiguration configuration)
+  {
+    _configuration = configuration;
+  }
+
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    optionsBuilder.UseSqlServer(@"Server=localhost;Database=YOUR_DB;User Id=YOUR_USER;Password=YOUR_PASSWORD;TrustServerCertificate=true");
+    var connectionString = _configuration.GetConnectionString("Database");
+    optionsBuilder.UseSqlServer(connectionString);
   }
 }
+
+//Server=localhost;Database=myfinance;User Id=SA;Password=<sql123>;TrustServerCertificate=true

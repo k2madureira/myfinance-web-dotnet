@@ -37,7 +37,7 @@ namespace myfinance_web_dotnet_service
     }
     public List<Transacao> ListarRegistros()
     {
-      var dbSet = _dbContext.Transacao;
+      var dbSet = _dbContext.Transacao.Include(item => item.PlanoConta);
       return dbSet.ToList();
     }
     public Transacao RetornarRegistro(int Id)
